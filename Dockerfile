@@ -18,7 +18,7 @@ RUN mkdir -p test-results playwright-report
 
 # Set environment variables for CI
 ENV CI=true
-ENV NODE_ENV=test
+ENV NODE_ENV=dev
 
 # Run the tests
 CMD ["npx", "playwright", "test", "--reporter=html"]

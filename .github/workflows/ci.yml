@@ -161,7 +161,7 @@ jobs:
   publish-report:
     name: Publish Test Report
     runs-on: ubuntu-latest
-    needs: [full-tests, api-tests]
+    needs: [full-tests]
     if: always()
     
     steps:
