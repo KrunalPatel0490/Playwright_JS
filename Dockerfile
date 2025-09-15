@@ -7,8 +7,8 @@ WORKDIR /app
 # Copy package.json and package-lock.json
 COPY package*.json ./
 
-# Install dependencies
-RUN npm ci --only=production
+# Install dependencies (including devDependencies for @playwright/test)
+RUN npm ci
 
 # Copy the rest of the application
 COPY . .
@@ -18,7 +18,7 @@ RUN mkdir -p test-results playwright-report
 
 # Set environment variables for CI
 ENV CI=true
-ENV NODE_ENV=production
+ENV NODE_ENV=test
 
 # Run the tests
 CMD ["npx", "playwright", "test", "--reporter=html"]
