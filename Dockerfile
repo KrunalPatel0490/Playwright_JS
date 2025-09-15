@@ -1,5 +1,5 @@
 # Use the official Playwright image with Node.js
-FROM mcr.microsoft.com/playwright:v1.41.2-jammy
+FROM mcr.microsoft.com/playwright:v1.55.0-jammy
 
 # Set the working directory
 WORKDIR /app

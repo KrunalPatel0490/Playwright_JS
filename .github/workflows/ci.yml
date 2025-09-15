@@ -162,7 +162,7 @@ jobs:
     name: Publish Test Report
     runs-on: ubuntu-latest
     needs: [full-tests]
-    if: always()
+    if: always() && github.ref == 'refs/heads/main'
     permissions:
       contents: read
       pages: write
@@ -174,11 +174,30 @@ jobs:
 
     - name: Download all artifacts
       uses: actions/download-artifact@v4
-
-    - name: Publish HTML Report
-      uses: peaceiris/actions-gh-pages@v3
-      if: github.ref == 'refs/heads/main'
       with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: playwright-report
-        destination_dir: test-reports/${{ github.run_number }}
+        path: artifacts
+
+    - name: Setup Pages
+      uses: actions/configure-pages@v4
+
+    - name: Prepare report directory
+      run: |
+        mkdir -p report
+        # Copy test results if they exist
+        if [ -d "artifacts" ]; then
+          find artifacts -name "*.html" -exec cp {} report/ \; 2>/dev/null || true
+          find artifacts -name "playwright-report" -exec cp -r {}/* report/ \; 2>/dev/null || true
+        fi
+        # Create index.html if no reports found
+        if [ ! -f "report/index.html" ]; then
+          echo "<h1>No test reports available</h1><p>Tests may not have run or failed to generate reports.</p>" > report/index.html
+        fi
+
+    - name: Upload Pages artifact
+      uses: actions/upload-pages-artifact@v3
+      with:
+        path: report
+
+    - name: Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v4
