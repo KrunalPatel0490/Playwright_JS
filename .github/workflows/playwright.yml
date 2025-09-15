@@ -2,9 +2,9 @@ name: Docker Tests
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [main, develop]
   pull_request:
-    branches: [ main, develop ]
+    branches: [main, develop]
 
 jobs:
   # test:
@@ -15,7 +15,7 @@ jobs:
   #     matrix:
   #       browser: [chromium, webkit]
   #       node-version: [18, 20]
-    
+
   #   steps:
   #   - name: Checkout code
   #     uses: actions/checkout@v4
@@ -50,7 +50,7 @@ jobs:
   # api-tests:
   #   timeout-minutes: 30
   #   runs-on: ubuntu-latest
-    
+
   #   steps:
   #   - name: Checkout code
   #     uses: actions/checkout@v4
@@ -85,71 +85,71 @@ jobs:
   docker-test:
     timeout-minutes: 45
     runs-on: ubuntu-latest
-    
+
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Create test results directory
-      run: mkdir -p test-results
+      - name: Create test results directory
+        run: mkdir -p test-results
 
-    - name: Build Docker image
-      run: |
-        docker build -t playwright-tests .
+      - name: Build Docker image
+        run: |
+          docker build -t playwright-tests .
 
-    - name: Run tests in Docker
-      run: |
-        docker run --rm \
-          -v ${{ github.workspace }}/test-results:/app/test-results \
-          -v ${{ github.workspace }}/playwright-report:/app/playwright-report \
-          playwright-tests npx playwright test tests/example/ --reporter=html
+      - name: Run tests in Docker
+        run: |
+          docker run --rm \
+            -v ${{ github.workspace }}/test-results:/app/test-results \
+            -v ${{ github.workspace }}/playwright-report:/app/playwright-report \
+            playwright-tests npx playwright test tests/example/ --reporter=html
 
-    - name: Upload Docker test results
-      uses: actions/upload-artifact@v4
-      if: always()
-      with:
-        name: docker-test-results
-        path: |
-          test-results/
-          playwright-report/
-        retention-days: 30
+      - name: Upload Docker test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: docker-test-results
+          path: |
+            test-results/
+            playwright-report/
+          retention-days: 30
 
   lint-and-format:
     runs-on: ubuntu-latest
-    
+
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '20'
-        cache: 'npm'
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
 
-    - name: Install dependencies
-      run: npm ci
+      - name: Install dependencies
+        run: npm ci
 
-    - name: Check code formatting
-      run: |
-        # Add prettier check if you have it configured
-        echo "Code formatting check passed"
+      - name: Check code formatting
+        run: |
+          # Add prettier check if you have it configured
+          echo "Code formatting check passed"
 
-    - name: Lint JavaScript files
-      run: |
-        # Add ESLint check if you have it configured
-        echo "Linting passed"
+      - name: Lint JavaScript files
+        run: |
+          # Add ESLint check if you have it configured
+          echo "Linting passed"
 
   security-scan:
     runs-on: ubuntu-latest
-    
+
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Run security audit
-      run: npm audit --audit-level=high
+      - name: Run security audit
+        run: npm audit --audit-level=high
 
-    - name: Check for vulnerabilities
-      run: |
-        npm audit --audit-level=moderate --production
+      - name: Check for vulnerabilities
+        run: |
+          npm audit --audit-level=moderate --production

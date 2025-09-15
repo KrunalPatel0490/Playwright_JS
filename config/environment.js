@@ -3,24 +3,24 @@
  */
 
 const environments = {
-    dev: {
-        baseURL: 'https://dev.example.com',
-        apiURL: 'https://api-dev.example.com',
-        timeout: 30000,
-        retries: 1
-    },
-    staging: {
-        baseURL: 'https://staging.example.com',
-        apiURL: 'https://api-staging.example.com',
-        timeout: 30000,
-        retries: 2
-    },
-    prod: {
-        baseURL: 'https://example.com',
-        apiURL: 'https://api.example.com',
-        timeout: 60000,
-        retries: 3
-    }
+  dev: {
+    baseURL: 'https://dev.example.com',
+    apiURL: 'https://api-dev.example.com',
+    timeout: 30000,
+    retries: 1,
+  },
+  staging: {
+    baseURL: 'https://staging.example.com',
+    apiURL: 'https://api-staging.example.com',
+    timeout: 30000,
+    retries: 2,
+  },
+  prod: {
+    baseURL: 'https://example.com',
+    apiURL: 'https://api.example.com',
+    timeout: 60000,
+    retries: 3,
+  },
 };
 
 /**
@@ -29,11 +29,13 @@ const environments = {
  * @returns {Object} Environment configuration
  */
 function getEnvironment(env = 'dev') {
-    const environment = environments[env.toLowerCase()];
-    if (!environment) {
-        throw new Error(`Environment '${env}' not found. Available environments: ${Object.keys(environments).join(', ')}`);
-    }
-    return environment;
+  const environment = environments[env.toLowerCase()];
+  if (!environment) {
+    throw new Error(
+      `Environment '${env}' not found. Available environments: ${Object.keys(environments).join(', ')}`
+    );
+  }
+  return environment;
 }
 
 /**
@@ -41,12 +43,12 @@ function getEnvironment(env = 'dev') {
  * @returns {Object} Current environment configuration
  */
 function getCurrentEnvironment() {
-    const env = process.env.NODE_ENV || process.env.TEST_ENV || 'dev';
-    return getEnvironment(env);
+  const env = process.env.NODE_ENV || process.env.TEST_ENV || 'dev';
+  return getEnvironment(env);
 }
 
 module.exports = {
-    environments,
-    getEnvironment,
-    getCurrentEnvironment
+  environments,
+  getEnvironment,
+  getCurrentEnvironment,
 };

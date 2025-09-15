@@ -18,7 +18,14 @@
     "allure:open-single": "start allure-single-report/index.html",
     "codegen": "npx playwright codegen",
     "show-report": "npx playwright show-report --host=127.0.0.1 --port=9323",
-    "open-report": "start playwright-report/index.html"
+    "open-report": "start playwright-report/index.html",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "quality:check": "npm run lint && npm run format:check",
+    "quality:fix": "npm run lint:fix && npm run format",
+    "prepare": "husky install"
   },
   "keywords": [
     "playwright",
@@ -34,6 +41,22 @@
     "csv-parse": "^5.5.6",
     "fs-extra": "^11.2.0",
     "allure-playwright": "^3.0.0",
-    "allure-commandline": "^2.25.0"
+    "allure-commandline": "^2.25.0",
+    "eslint": "^8.57.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-playwright": "^0.22.2",
+    "eslint-plugin-node": "^11.1.0",
+    "prettier": "^3.2.5",
+    "husky": "^8.0.3",
+    "lint-staged": "^15.2.2"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md,yml,yaml}": [
+      "prettier --write"
+    ]
   }
 }

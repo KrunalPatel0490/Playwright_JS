@@ -13,57 +13,66 @@ module.exports = defineConfig({
   /* Maximum time one test can run for */
   timeout: 30 * 1000,
   expect: {
-    timeout: 5000
+    timeout: 5000,
   },
-  
+
   /* ===========================================================
    * PARALLEL EXECUTION CONFIGURATION
    * =========================================================== */
   /* Run tests in files in parallel */
   fullyParallel: true,
-  
+
   /* Fail the build on CI if you accidentally left test.only in the source code */
   forbidOnly: !!process.env.CI,
-  
+
   /* Configure number of retries for flaky tests */
   retries: process.env.CI ? 2 : 0,
-  
+
   /* Configure number of workers based on environment */
-  workers: process.env.CI ? 2 : '50%',  // Use 50% of available CPU cores locally
-  
+  workers: process.env.CI ? 2 : '50%', // Use 50% of available CPU cores locally
+
   /* Maximum number of test failures before stopping the test run */
-  maxFailures: process.env.CI ? 10 : 0,  // Don't stop on failures locally
-  
+  maxFailures: process.env.CI ? 10 : 0, // Don't stop on failures locally
+
   /* Reporter to use */
   reporter: [
-    ['html', { 
-      open: 'never',
-      outputFolder: 'test-results/html-reports/'
-    }],
-    ['list'],  // Console reporter
-    ['junit', { 
-      outputFile: 'test-results/junit/results.xml' 
-    }],
+    [
+      'html',
+      {
+        open: 'never',
+        outputFolder: 'test-results/html-reports/',
+      },
+    ],
+    ['list'], // Console reporter
+    [
+      'junit',
+      {
+        outputFile: 'test-results/junit/results.xml',
+      },
+    ],
     // Allure Reports - uncomment to use
-    ['allure-playwright', {
-      outputFolder: 'allure-results'
-    }]
+    [
+      'allure-playwright',
+      {
+        outputFolder: 'allure-results',
+      },
+    ],
   ],
 
   /* Shared settings for all the projects */
   use: {
     /* Maximum time each action such as `click()` can take */
     actionTimeout: 0,
-    
+
     /* Base URL to use in actions like `await page.goto('/')` */
     baseURL: env.baseURL || 'https://demo.automationtesting.in',
 
     /* Collect trace when retrying the failed test */
     trace: 'on-first-retry',
-    
+
     /* Take screenshot on failure */
     screenshot: 'only-on-failure',
-    
+
     /* Video recording */
     video: 'on-first-retry',
   },
@@ -73,33 +82,33 @@ module.exports = defineConfig({
     // Parallel execution within Chromium
     {
       name: 'chromium',
-      use: { 
+      use: {
         ...devices['Desktop Chrome'],
-        viewport: { width: 1920, height: 1080 }
+        viewport: { width: 1920, height: 1080 },
       },
       testMatch: '**/*.{test,spec}.js',
     },
-    
+
     // Parallel execution within Firefox
     {
       name: 'firefox',
-      use: { 
+      use: {
         ...devices['Desktop Firefox'],
-        viewport: { width: 1920, height: 1080 }
+        viewport: { width: 1920, height: 1080 },
       },
       testMatch: '**/*.{test,spec}.js',
     },
-    
+
     // Parallel execution within WebKit
     {
       name: 'webkit',
-      use: { 
+      use: {
         ...devices['Desktop Safari'],
-        viewport: { width: 1920, height: 1080 }
+        viewport: { width: 1920, height: 1080 },
       },
       testMatch: '**/*.{test,spec}.js',
     },
-    
+
     // Mobile view tests (runs in parallel with desktop tests)
     {
       name: 'Mobile Chrome',
@@ -107,7 +116,7 @@ module.exports = defineConfig({
       testMatch: '**/mobile/*.{test,spec}.js',
     },
   ],
-  
+
   /* Run your local dev server before starting the tests */
   // webServer: {
   //   command: 'npm run start',

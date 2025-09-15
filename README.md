@@ -1,6 +1,7 @@
 # Playwright Automation Framework
 
-A robust test automation framework built with Playwright, featuring Page Object Model (POM) design pattern and data-driven testing capabilities.
+A robust test automation framework built with Playwright, featuring Page Object
+Model (POM) design pattern and data-driven testing capabilities.
 
 ## Features
 
@@ -12,7 +13,8 @@ A robust test automation framework built with Playwright, featuring Page Object 
 - **Comprehensive Reporting** with HTML, JUnit, and console reporters
 - **Environment Configuration** for different environments (dev, staging, prod)
 - **Automatic Screenshots** on test failure
-- **API Testing** with data factories, authentication manager, test helpers, and mocking capabilities
+- **API Testing** with data factories, authentication manager, test helpers, and
+  mocking capabilities
 - **Extent Reports Integration** for detailed test insights and reporting
 
 ## Getting Started
@@ -37,21 +39,25 @@ A robust test automation framework built with Playwright, featuring Page Object 
 ## Running Tests
 
 ### Run all tests
+
 ```bash
 npm test
 ```
 
 ### Run tests in UI mode
+
 ```bash
 npm run test:ui
 ```
 
 ### Run tests in debug mode
+
 ```bash
 npm run test:debug
 ```
 
 ### Run tests on specific browser
+
 ```bash
 npm run test:chrome
 npm run test:firefox
@@ -59,21 +65,25 @@ npm run test:webkit
 ```
 
 ### Run tests in parallel
+
 ```bash
 npx playwright test --workers=4
 ```
 
 ### Run tests with specific environment
+
 ```bash
 TEST_ENV=staging npm test
 ```
 
 ### Run tests with Extent Reports
+
 ```bash
 npm run test:extent
 ```
 
 ### Open Extent Report
+
 ```bash
 npm run open-extent
 ```
@@ -85,7 +95,9 @@ This framework supports data-driven testing using both JSON and CSV files.
 ### Test Data Structure
 
 #### JSON Format
+
 Create a JSON file in the `test-data` directory:
+
 ```json
 {
   "validRegistrations": [
@@ -105,7 +117,9 @@ Create a JSON file in the `test-data` directory:
 ```
 
 #### CSV Format
+
 Create a CSV file in the `test-data` directory:
+
 ```csv
 testName,firstName,lastName,email,phone,gender,hobbies,skills,country
 test_case_1,John,Doe,john.doe@example.com,1234567890,Male,"Cricket, Movies",Java,India
@@ -113,7 +127,7 @@ test_case_1,John,Doe,john.doe@example.com,1234567890,Male,"Cricket, Movies",Java
 
 ### Using Test Data in Tests
 
-```javascript
+````javascript
 const DataUtils = require('./utils/data-utils');
 
 // Load test data
@@ -121,7 +135,7 @@ const testData = DataUtils.loadTestData('test-data/registration-data.json');
 
 test('data-driven test example', async ({ page }) => {
   const registrationPage = new RegistrationPage(page);
-  
+
   for (const data of testData.validRegistrations) {
     await registrationPage.navigate();
     await registrationPage.fillRegistrationForm(data);
@@ -148,9 +162,10 @@ const users = DataFactories.createMultiple(DataFactories.createUser, 10);
 const product = DataFactories.createProduct();
 const order = DataFactories.createOrder();
 const credentials = DataFactories.createAuthCredentials();
-```
+````
 
 ### 2. API Authentication Manager
+
 Handle authentication flows:
 
 ```javascript
@@ -158,10 +173,12 @@ const AuthManager = require('./tests/api/auth-manager');
 
 const authManager = new AuthManager('https://api.example.com');
 await authManager.login('user@example.com', 'password');
-const context = await authManager.createAuthenticatedContext('user@example.com');
+const context =
+  await authManager.createAuthenticatedContext('user@example.com');
 ```
 
 ### 3. API Test Helpers
+
 Common assertions and utilities:
 
 ```javascript
@@ -174,6 +191,7 @@ ApiHelpers.assertArrayResponse(array, { minLength: 1 });
 ```
 
 ### 4. API Mocking for UI Tests
+
 Mock API responses in UI tests:
 
 ```javascript
@@ -215,8 +233,10 @@ npx playwright test tests/api/users.spec.js
 
 ## Best Practices
 
-1. **Page Objects**: Keep page-specific selectors and methods in page object classes.
-2. **Test Data**: Store test data in external files (JSON/CSV) for better maintainability.
+1. **Page Objects**: Keep page-specific selectors and methods in page object
+   classes.
+2. **Test Data**: Store test data in external files (JSON/CSV) for better
+   maintainability.
 3. **Selectors**: Use data-testid attributes for stable element selection.
 4. **Assertions**: Add meaningful assertions for each test case.
 5. **Parallel Execution**: Use parallel execution for faster test runs.
@@ -224,13 +244,15 @@ npx playwright test tests/api/users.spec.js
 ## Reporting
 
 After test execution, view the HTML report:
+
 ```bash
 npx playwright show-report
 ```
 
 ## Extent Reports Integration
 
-This framework includes Extent Reports integration for detailed test insights and reporting.
+This framework includes Extent Reports integration for detailed test insights
+and reporting.
 
 ### Extent Reports Features
 
@@ -243,18 +265,18 @@ This framework includes Extent Reports integration for detailed test insights an
 
 ### Configuration Options
 
-**Enable Extent Reports:**
-Uncomment the Extent Reports configuration in `playwright.config.js`:
+**Enable Extent Reports:** Uncomment the Extent Reports configuration in
+`playwright.config.js`:
 
 ```javascript
 reporter: [
-  ['html', { 
+  ['html', {
     open: 'never',
     outputFolder: 'test-results/html-reports/'
   }],
   ['list'],
-  ['junit', { 
-    outputFile: 'test-results/junit/results.xml' 
+  ['junit', {
+    outputFile: 'test-results/junit/results.xml'
   }],
   ['./tests/utils/extent-reporter.js', {
     outputFolder: 'extent-reports',
@@ -263,8 +285,8 @@ reporter: [
 ],
 ```
 
-**Customize Extent Reports:**
-Edit `tests/utils/extent-config.js` to modify:
+**Customize Extent Reports:** Edit `tests/utils/extent-config.js` to modify:
+
 - Report themes and styling
 - System information
 - Screenshot settings
@@ -272,7 +294,9 @@ Edit `tests/utils/extent-config.js` to modify:
 
 ## Troubleshooting
 
-- If tests fail with browser launch errors, ensure all required browsers are installed:
+- If tests fail with browser launch errors, ensure all required browsers are
+  installed:
+
   ```bash
   npx playwright install
   ```
@@ -292,4 +316,5 @@ Edit `tests/utils/extent-config.js` to modify:
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
+for details.

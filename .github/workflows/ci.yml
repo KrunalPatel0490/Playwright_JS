@@ -2,15 +2,15 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [main, develop]
   pull_request:
-    branches: [ main, develop ]
+    branches: [main, develop]
   schedule:
     # Run tests daily at 2 AM UTC
-    - cron: '0 2 * * *'
+    - cron: "0 2 * * *"
 
 env:
-  NODE_VERSION: '20'
+  NODE_VERSION: "20"
 
 jobs:
   # Quick smoke tests - ONLY EXAMPLE TESTS ON PUSH
@@ -18,37 +18,37 @@ jobs:
     name: Example Tests (Push Trigger)
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    
+
     steps:
-    - name: Checkout
-      uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ env.NODE_VERSION }}
-        cache: 'npm'
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
 
-    - name: Install dependencies
-      run: npm ci
+      - name: Install dependencies
+        run: npm ci
 
-    - name: Install Playwright
-      run: npx playwright install chromium
+      - name: Install Playwright
+        run: npx playwright install chromium
 
-    - name: Run Example Tests Only
-      run: npx playwright test tests/example/ --project=chromium
-      env:
-        CI: true
+      - name: Run Example Tests Only
+        run: npx playwright test tests/example/ --project=chromium
+        env:
+          CI: true
 
-    - name: Upload test results
-      uses: actions/upload-artifact@v4
-      if: failure()
-      with:
-        name: example-test-results
-        path: |
-          test-results/
-          playwright-report/
-        retention-days: 7
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: example-test-results
+          path: |
+            test-results/
+            playwright-report/
+          retention-days: 7
 
   # Full test suite - ONLY ON SCHEDULE OR MANUAL TRIGGER
   full-tests:
@@ -61,37 +61,37 @@ jobs:
       fail-fast: false
       matrix:
         browser: [chromium, webkit]
-    
+
     steps:
-    - name: Checkout
-      uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ env.NODE_VERSION }}
-        cache: 'npm'
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
 
-    - name: Install dependencies
-      run: npm ci
+      - name: Install dependencies
+        run: npm ci
 
-    - name: Install Playwright Browsers
-      run: npx playwright install --with-deps ${{ matrix.browser }}
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps ${{ matrix.browser }}
 
-    - name: Run UI tests
-      run: npx playwright test tests/example/ --project=${{ matrix.browser }}
-      env:
-        CI: true
+      - name: Run UI tests
+        run: npx playwright test tests/example/ --project=${{ matrix.browser }}
+        env:
+          CI: true
 
-    - name: Upload test results
-      uses: actions/upload-artifact@v4
-      if: failure()
-      with:
-        name: test-results-${{ matrix.browser }}
-        path: |
-          test-results/
-          playwright-report/
-        retention-days: 7
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: test-results-${{ matrix.browser }}
+          path: |
+            test-results/
+            playwright-report/
+          retention-days: 7
 
   # API tests - ONLY ON SCHEDULE OR MANUAL TRIGGER
   # api-tests:
@@ -100,7 +100,7 @@ jobs:
   #   # Only run on scheduled events or manual triggers, NOT on push
   #   if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
   #   timeout-minutes: 30
-    
+
   #   steps:
   #   - name: Checkout
   #     uses: actions/checkout@v4
@@ -136,26 +136,26 @@ jobs:
   security-scan:
     name: Security Scan
     runs-on: ubuntu-latest
-    
+
     steps:
-    - name: Checkout
-      uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ env.NODE_VERSION }}
-        cache: 'npm'
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
 
-    - name: Install dependencies
-      run: npm ci
+      - name: Install dependencies
+        run: npm ci
 
-    - name: Run security audit
-      run: npm audit --audit-level=moderate
+      - name: Run security audit
+        run: npm audit --audit-level=moderate
 
-    - name: Check for known vulnerabilities
-      run: |
-        npx audit-ci --moderate
+      - name: Check for known vulnerabilities
+        run: |
+          npx audit-ci --moderate
 
   # Generate and publish test report
   publish-report:
@@ -167,37 +167,37 @@ jobs:
       contents: read
       pages: write
       id-token: write
-    
+
     steps:
-    - name: Checkout
-      uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-    - name: Download all artifacts
-      uses: actions/download-artifact@v4
-      with:
-        path: artifacts
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
 
-    - name: Setup Pages
-      uses: actions/configure-pages@v4
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
 
-    - name: Prepare report directory
-      run: |
-        mkdir -p report
-        # Copy test results if they exist
-        if [ -d "artifacts" ]; then
-          find artifacts -name "*.html" -exec cp {} report/ \; 2>/dev/null || true
-          find artifacts -name "playwright-report" -exec cp -r {}/* report/ \; 2>/dev/null || true
-        fi
-        # Create index.html if no reports found
-        if [ ! -f "report/index.html" ]; then
-          echo "<h1>No test reports available</h1><p>Tests may not have run or failed to generate reports.</p>" > report/index.html
-        fi
+      - name: Prepare report directory
+        run: |
+          mkdir -p report
+          # Copy test results if they exist
+          if [ -d "artifacts" ]; then
+            find artifacts -name "*.html" -exec cp {} report/ \; 2>/dev/null || true
+            find artifacts -name "playwright-report" -exec cp -r {}/* report/ \; 2>/dev/null || true
+          fi
+          # Create index.html if no reports found
+          if [ ! -f "report/index.html" ]; then
+            echo "<h1>No test reports available</h1><p>Tests may not have run or failed to generate reports.</p>" > report/index.html
+          fi
 
-    - name: Upload Pages artifact
-      uses: actions/upload-pages-artifact@v3
-      with:
-        path: report
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: report
 
-    - name: Deploy to GitHub Pages
-      id: deployment
-      uses: actions/deploy-pages@v4
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

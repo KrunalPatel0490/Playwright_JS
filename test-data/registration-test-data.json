@@ -33,16 +33,6 @@
       "confirmPassword": "Test@456"
     }
   ],
-  "invalidEmails": [
-    "invalid-email",
-    "test@",
-    "@example.com",
-    "test@.com"
-  ],
-  "invalidPhones": [
-    "12345",
-    "abcdefghij",
-    "12345678901",
-    "123-456-7890"
-  ]
+  "invalidEmails": ["invalid-email", "test@", "@example.com", "test@.com"],
+  "invalidPhones": ["12345", "abcdefghij", "12345678901", "123-456-7890"]
 }
