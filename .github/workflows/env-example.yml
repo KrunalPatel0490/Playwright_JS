@@ -1,0 +1,30 @@
+# Example environment configuration for GitHub Actions
+# Copy this to your repository secrets or environment variables
+
+# API Testing Configuration
+API_BASE_URL: "https://api.example.com"
+API_TIMEOUT: "30000"
+
+# Test Environment Configuration
+TEST_ENV: "staging"
+TEST_USER_EMAIL: "test@example.com"
+TEST_USER_PASSWORD: "secure_password_here"
+
+# Browser Configuration
+HEADLESS: "true"
+BROWSER_TIMEOUT: "60000"
+
+# Reporting Configuration
+REPORT_SLACK_WEBHOOK: "https://hooks.slack.com/services/YOUR/SLACK/WEBHOOK"
+REPORT_EMAIL: "team@example.com"
+
+# Database Configuration (if needed)
+DB_CONNECTION_STRING: "your_db_connection_string"
+
+# Third-party Service Keys (store as secrets)
+GITHUB_TOKEN: "your_github_token"
+DOCKER_REGISTRY_TOKEN: "your_docker_token"
+
+# Notification Settings
+NOTIFY_ON_FAILURE: "true"
+NOTIFY_ON_SUCCESS: "false"
