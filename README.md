@@ -6,6 +6,7 @@ Model (POM) design pattern and data-driven testing capabilities.
 ## Features
 
 - **Page Object Model (POM)** for better test maintenance
+- **Test Tagging** for flexible test organization and execution
 - **Data-Driven Testing** with support for JSON and CSV files
 - **Parallel Test Execution** for faster test runs
 - **Cross-Browser Testing** (Chromium, Firefox, WebKit)
@@ -15,7 +16,7 @@ Model (POM) design pattern and data-driven testing capabilities.
 - **Automatic Screenshots** on test failure
 - **API Testing** with data factories, authentication manager, test helpers, and
   mocking capabilities
-- **Extent Reports Integration** for detailed test insights and reporting
+- **Allure Reports Integration** for detailed test insights and reporting
 
 ## Getting Started
 
@@ -36,6 +37,51 @@ Model (POM) design pattern and data-driven testing capabilities.
    npx playwright install
    ```
 
+## Test Tags
+
+We've implemented a tagging system to help organize and filter tests. Tags can
+be used to run specific groups of tests.
+
+### Available Tags
+
+- `@smoke`: Critical path tests that verify core functionality
+- `@regression`: Tests that cover existing functionality
+- `@ui`: Tests that verify UI elements and interactions
+- `@search`: Tests related to search functionality
+- `@google`: Tests specific to Google search
+
+### Running Tests by Tags
+
+Run tests with specific tags:
+
+```bash
+# Run only smoke tests
+npx playwright test --grep @smoke
+
+# Run tests with multiple tags (OR condition)
+npx playwright test --grep "@smoke|@regression"
+
+# Exclude specific tags
+npx playwright test --grep-invert @slow
+
+# Using environment variables
+GREP=@smoke npx playwright test
+```
+
+### Adding Tags to Tests
+
+```javascript
+// Tag a single test
+test('should verify search functionality @smoke @search', async ({ page }) => {
+  // test code
+});
+
+// Tag all tests in a describe block
+test.describe('Search Feature', { tag: '@search' }, () => {
+  // all tests here will inherit the @search tag
+});
+```
+
 ## Running Tests
 
 ### Run all tests
@@ -50,42 +96,14 @@ npm test
 npm run test:ui
 ```
 
-### Run tests in debug mode
+### Run tests with specific tags
 
 ```bash
-npm run test:debug
-```
+# Run only smoke tests
+npm test -- --grep @smoke
 
-### Run tests on specific browser
-
-```bash
-npm run test:chrome
-npm run test:firefox
-npm run test:webkit
-```
-
-### Run tests in parallel
-
-```bash
-npx playwright test --workers=4
-```
-
-### Run tests with specific environment
-
-```bash
-TEST_ENV=staging npm test
-```
-
-### Run tests with Extent Reports
-
-```bash
-npm run test:extent
-```
-
-### Open Extent Report
-
-```bash
-npm run open-extent
+# Run tests and generate Allure report
+npm run test:allure -- --grep @smoke
 ```
 
 ## Data-Driven Testing
@@ -249,12 +267,12 @@ After test execution, view the HTML report:
 npx playwright show-report
 ```
 
-## Extent Reports Integration
+## Allure Reports Integration
 
-This framework includes Extent Reports integration for detailed test insights
+This framework includes Allure Reports integration for detailed test insights
 and reporting.
 
-### Extent Reports Features
+### Allure Reports Features
 
 - Detailed test execution dashboard
 - Automatic screenshot capture on failures
@@ -265,7 +283,7 @@ and reporting.
 
 ### Configuration Options
 
-**Enable Extent Reports:** Uncomment the Extent Reports configuration in
+**Enable Allure Reports:** Uncomment the Allure Reports configuration in
 `playwright.config.js`:
 
 ```javascript
@@ -278,14 +296,14 @@ reporter: [
   ['junit', {
     outputFile: 'test-results/junit/results.xml'
   }],
-  ['./tests/utils/extent-reporter.js', {
-    outputFolder: 'extent-reports',
+  ['./tests/utils/allure-reporter.js', {
+    outputFolder: 'allure-reports',
     reportName: 'Playwright-Test-Report.html'
   }]
 ],
 ```
 
-**Customize Extent Reports:** Edit `tests/utils/extent-config.js` to modify:
+**Customize Allure Reports:** Edit `tests/utils/allure-config.js` to modify:
 
 - Report themes and styling
 - System information

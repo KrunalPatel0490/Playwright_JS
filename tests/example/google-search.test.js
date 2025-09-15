@@ -1,7 +1,7 @@
 const { test, expect } = require('@playwright/test');
 const GoogleSearchPage = require('../pages/google-search-page');
 
-test.describe('google Search', () => {
+test.describe('google Search', { tag: '@google' }, () => {
   let googlePage;
 
   test.beforeEach(async ({ page }) => {
@@ -9,7 +9,9 @@ test.describe('google Search', () => {
     await googlePage.open();
   });
 
-  test('should search for Playwright and verify results', async ({ page: _page }) => {
+  test('should search for Playwright and verify results @smoke @search @ui', async ({
+    page: _page,
+  }) => {
     const searchQuery = 'Playwright';
 
     // Perform search

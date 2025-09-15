@@ -17,6 +17,16 @@ module.exports = defineConfig({
   },
 
   /* ===========================================================
+   * TEST TAGS CONFIGURATION
+   * =========================================================== */
+  // Define test tags that can be used to filter tests
+  // Example: npx playwright test --grep @smoke
+  //          npx playwright test --grep "@smoke|@regression"
+  //          npx playwright test --grep-invert @slow
+  grep: process.env.GREP ? new RegExp(process.env.GREP) : undefined,
+  grepInvert: process.env.GREP_INVERT ? new RegExp(process.env.GREP_INVERT) : undefined,
+
+  /* ===========================================================
    * PARALLEL EXECUTION CONFIGURATION
    * =========================================================== */
   /* Run tests in files in parallel */
@@ -51,15 +61,15 @@ module.exports = defineConfig({
       },
     ],
     // Allure Reports - uncomment to use
-    [
-      'allure-playwright',
-      {
-        outputFolder: 'allure-results',
-      },
-    ],
+    // [
+    //   'allure-playwright',
+    //   {
+    //     outputFolder: 'allure-results',
+    //   },
+    // ],
   ],
 
-  /* Shared settings for all the projects */
+  /* Shared settings for all the projects below */
   use: {
     /* Maximum time each action such as `click()` can take */
     actionTimeout: 0,
@@ -116,6 +126,9 @@ module.exports = defineConfig({
       testMatch: '**/mobile/*.{test,spec}.js',
     },
   ],
+
+  /* Folder for test artifacts such as screenshots, videos, traces, etc. */
+  outputDir: 'test-results/artifacts/',
 
   /* Run your local dev server before starting the tests */
   // webServer: {
