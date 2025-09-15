@@ -11,7 +11,7 @@ const env = getCurrentEnvironment();
 module.exports = defineConfig({
   testDir: './tests',
   /* Maximum time one test can run for */
-  timeout: 30 * 100000,
+  timeout: 30 * 1000,
   expect: {
     timeout: 5000
   },
