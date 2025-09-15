@@ -1,0 +1,48 @@
+{
+  "validRegistrations": [
+    {
+      "testName": "valid_registration_1",
+      "firstName": "John",
+      "lastName": "Doe",
+      "address": "123 Main St",
+      "email": "john.doe@example.com",
+      "phone": "1234567890",
+      "gender": "Male",
+      "hobbies": ["Cricket", "Movies"],
+      "languages": ["English", "Hindi"],
+      "skills": "Java",
+      "country": "India",
+      "dateOfBirth": "1990-05-15",
+      "password": "Test@123",
+      "confirmPassword": "Test@123"
+    },
+    {
+      "testName": "valid_registration_2",
+      "firstName": "Jane",
+      "lastName": "Smith",
+      "address": "456 Oak Ave",
+      "email": "jane.smith@example.com",
+      "phone": "9876543210",
+      "gender": "Female",
+      "hobbies": ["Hockey"],
+      "languages": ["English"],
+      "skills": "Python",
+      "country": "United States",
+      "dateOfBirth": "1985-10-22",
+      "password": "Test@456",
+      "confirmPassword": "Test@456"
+    }
+  ],
+  "invalidEmails": [
+    "invalid-email",
+    "test@",
+    "@example.com",
+    "test@.com"
+  ],
+  "invalidPhones": [
+    "12345",
+    "abcdefghij",
+    "12345678901",
+    "123-456-7890"
+  ]
+}

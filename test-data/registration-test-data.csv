@@ -1,0 +1,3 @@
+testName,firstName,lastName,address,email,phone,gender,hobbies,languages,skills,country,dateOfBirth,password,confirmPassword
+valid_registration_1,John,Doe,123 Main St,john.doe@example.com,1234567890,Male,"Cricket, Movies","English, Hindi",Java,India,1990-05-15,Test@123,Test@123
+valid_registration_2,Jane,Smith,456 Oak Ave,jane.smith@example.com,9876543210,Female,Hockey,English,Python,United States,1985-10-22,Test@456,Test@456
