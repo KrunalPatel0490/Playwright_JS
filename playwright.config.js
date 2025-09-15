@@ -43,6 +43,10 @@ module.exports = defineConfig({
     ['list'],  // Console reporter
     ['junit', { 
       outputFile: 'test-results/junit/results.xml' 
+    }],
+    // Allure Reports - uncomment to use
+    ['allure-playwright', {
+      outputFolder: 'allure-results'
     }]
   ],
 

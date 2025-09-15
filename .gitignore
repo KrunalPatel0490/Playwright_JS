@@ -9,6 +9,12 @@ test-results/
 playwright-report/
 playwright/.cache/
 
+# Allure Reports
+allure-results/
+allure-report/
+allure-single-report/
+allure-temp/
+
 # Screenshots
 screenshots/
 *.png

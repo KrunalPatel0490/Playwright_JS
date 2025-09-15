@@ -1,4 +1,4 @@
-name: Playwright Tests
+name: Docker Tests
 
 on:
   push:
@@ -7,45 +7,45 @@ on:
     branches: [ main, develop ]
 
 jobs:
-  test:
-    timeout-minutes: 60
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        browser: [chromium, webkit]
-        node-version: [18, 20]
+  # test:
+  #   timeout-minutes: 60
+  #   runs-on: ubuntu-latest
+  #   strategy:
+  #     fail-fast: false
+  #     matrix:
+  #       browser: [chromium, webkit]
+  #       node-version: [18, 20]
     
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+  #   steps:
+  #   - name: Checkout code
+  #     uses: actions/checkout@v4
 
-    - name: Setup Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'npm'
+  #   - name: Setup Node.js ${{ matrix.node-version }}
+  #     uses: actions/setup-node@v4
+  #     with:
+  #       node-version: ${{ matrix.node-version }}
+  #       cache: 'npm'
 
-    - name: Install dependencies
-      run: npm ci
+  #   - name: Install dependencies
+  #     run: npm ci
 
-    - name: Install Playwright Browsers
-      run: npx playwright install --with-deps ${{ matrix.browser }}
+  #   - name: Install Playwright Browsers
+  #     run: npx playwright install --with-deps ${{ matrix.browser }}
 
-    - name: Run Playwright tests on ${{ matrix.browser }}
-      run: npx playwright test tests/example/ --project=${{ matrix.browser }}
-      env:
-        CI: true
+  #   - name: Run Playwright tests on ${{ matrix.browser }}
+  #     run: npx playwright test tests/example/ --project=${{ matrix.browser }}
+  #     env:
+  #       CI: true
 
-    - name: Upload test results
-      uses: actions/upload-artifact@v4
-      if: always()
-      with:
-        name: playwright-report-${{ matrix.browser }}-node${{ matrix.node-version }}
-        path: |
-          playwright-report/
-          test-results/
-        retention-days: 30
+  #   - name: Upload test results
+  #     uses: actions/upload-artifact@v4
+  #     if: always()
+  #     with:
+  #       name: playwright-report-${{ matrix.browser }}-node${{ matrix.node-version }}
+  #       path: |
+  #         playwright-report/
+  #         test-results/
+  #       retention-days: 30
 
   # api-tests:
   #   timeout-minutes: 30

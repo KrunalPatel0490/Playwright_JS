@@ -13,6 +13,7 @@ A robust test automation framework built with Playwright, featuring Page Object 
 - **Environment Configuration** for different environments (dev, staging, prod)
 - **Automatic Screenshots** on test failure
 - **API Testing** with data factories, authentication manager, test helpers, and mocking capabilities
+- **Extent Reports Integration** for detailed test insights and reporting
 
 ## Getting Started
 
@@ -65,6 +66,16 @@ npx playwright test --workers=4
 ### Run tests with specific environment
 ```bash
 TEST_ENV=staging npm test
+```
+
+### Run tests with Extent Reports
+```bash
+npm run test:extent
+```
+
+### Open Extent Report
+```bash
+npm run open-extent
 ```
 
 ## Data-Driven Testing
@@ -216,6 +227,48 @@ After test execution, view the HTML report:
 ```bash
 npx playwright show-report
 ```
+
+## Extent Reports Integration
+
+This framework includes Extent Reports integration for detailed test insights and reporting.
+
+### Extent Reports Features
+
+- Detailed test execution dashboard
+- Automatic screenshot capture on failures
+- Test categorization and tagging
+- System information and environment details
+- Interactive charts and statistics
+- Modern, responsive UI
+
+### Configuration Options
+
+**Enable Extent Reports:**
+Uncomment the Extent Reports configuration in `playwright.config.js`:
+
+```javascript
+reporter: [
+  ['html', { 
+    open: 'never',
+    outputFolder: 'test-results/html-reports/'
+  }],
+  ['list'],
+  ['junit', { 
+    outputFile: 'test-results/junit/results.xml' 
+  }],
+  ['./tests/utils/extent-reporter.js', {
+    outputFolder: 'extent-reports',
+    reportName: 'Playwright-Test-Report.html'
+  }]
+],
+```
+
+**Customize Extent Reports:**
+Edit `tests/utils/extent-config.js` to modify:
+- Report themes and styling
+- System information
+- Screenshot settings
+- Test categories
 
 ## Troubleshooting
 

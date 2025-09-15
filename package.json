@@ -11,6 +11,11 @@
     "test:webkit": "npx playwright test --project=webkit",
     "test:debug": "npx playwright test --debug",
     "test:report": "npx playwright test && npx playwright show-report",
+    "test:allure": "npx playwright test --reporter=allure-playwright",
+    "allure:generate": "npx allure generate allure-results --clean",
+    "allure:single": "npx allure generate allure-results --single-file --clean -o allure-single-report",
+    "allure:open": "npx allure open allure-report",
+    "allure:open-single": "start allure-single-report/index.html",
     "codegen": "npx playwright codegen",
     "show-report": "npx playwright show-report --host=127.0.0.1 --port=9323",
     "open-report": "start playwright-report/index.html"
@@ -27,6 +32,8 @@
     "@faker-js/faker": "^8.4.1",
     "@playwright/test": "^1.55.0",
     "csv-parse": "^5.5.6",
-    "fs-extra": "^11.2.0"
+    "fs-extra": "^11.2.0",
+    "allure-playwright": "^3.0.0",
+    "allure-commandline": "^2.25.0"
   }
 }
