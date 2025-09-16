@@ -1,0 +1,36 @@
+# Ignore template files
+**/*.template.js
+
+# Ignore test output directories
+test-results/
+playwright-report/
+playwright/.cache/
+
+# Ignore node_modules
+node_modules/
+
+# Ignore build output
+dist/
+build/
+
+# Ignore coverage directory
+coverage/
+
+# Ignore environment files
+.env
+.env.*
+!.env.example
+
+# Ignore IDE specific files
+.vscode/
+.idea/
+
+# Ignore Playwright test artifacts
+playwright-report/
+playwright/.cache/
+test-results/
+
+# Ignore package manager files
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
