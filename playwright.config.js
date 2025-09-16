@@ -61,12 +61,12 @@ module.exports = defineConfig({
       },
     ],
     // Allure Reports - uncomment to use
-    // [
-    //   'allure-playwright',
-    //   {
-    //     outputFolder: 'allure-results',
-    //   },
-    // ],
+    [
+      'allure-playwright',
+      {
+        outputFolder: 'allure-results',
+      },
+    ],
   ],
 
   /* Shared settings for all the projects below */

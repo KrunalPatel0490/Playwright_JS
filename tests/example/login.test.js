@@ -1,17 +1,53 @@
 const { test, expect } = require('@playwright/test');
 const LoginPage = require('../pages/login-page');
+const PerformanceUtils = require('../utils/performance-utils');
+const { getPerformanceBudget } = require('../../config/performance-budgets');
 const { generateRandomEmail } = require('../utils/test-utils');
 const { getCurrentEnvironment } = require('../../config/environment');
 
+async function verifyPerformanceMetrics(performanceUtils) {
+  const metrics = await performanceUtils.stopTracking('login-page-load');
+  const performanceBudget = getPerformanceMetrics();
+  performanceUtils.assertPerformanceBudget(performanceBudget);
+
+  logPerformanceMetrics(metrics, performanceUtils);
+}
+
+function getPerformanceMetrics() {
+  return getPerformanceBudget('https://example.com');
+}
+
+function logPerformanceMetrics(metrics, performanceUtils) {
+  console.log('Login Page Performance Metrics:', {
+    pageLoadTime: `${metrics.pageLoadTime}ms`,
+    timeToInteractive: `${metrics.timeToInteractive}ms`,
+    totalRequests: metrics.totalRequests,
+    totalResourcesSize: performanceUtils.formatBytes(metrics.totalResourcesSize),
+  });
+}
+
 test.describe('login Tests', () => {
   const env = getCurrentEnvironment();
+  let loginPage;
+  let performanceUtils;
 
-  test('should display login form elements on example.com', async ({ page }) => {
-    const loginPage = new LoginPage(page);
+  test.beforeEach(async ({ page }) => {
+    loginPage = new LoginPage(page);
+    performanceUtils = new PerformanceUtils(page);
+    await performanceUtils.startTracking();
+  });
 
+  test.afterEach(async () => {
+    // Ensure we always stop tracking and generate report, even if test fails
+    if (performanceUtils) {
+      await performanceUtils.stopTracking(test.info().title);
+    }
+  });
+
+  test('should load login page within performance budget @performance', async ({ page }) => {
     // Navigate to example.com instead of a login page that doesn't exist
     await loginPage.navigate('https://example.com');
-
+    await verifyPerformanceMetrics(performanceUtils);
     // Check if the page loaded successfully
     const title = await page.title();
     expect(title).toContain('Example Domain');

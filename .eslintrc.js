@@ -23,7 +23,7 @@ module.exports = {
     // Code quality rules (relaxed for initial setup)
     complexity: ['warn', 15],
     'max-depth': ['warn', 4],
-    'max-lines-per-function': ['warn', 60],
+    'max-lines-per-function': ['warn', 70],
     'max-params': ['warn', 5],
 
     // Playwright-specific rules

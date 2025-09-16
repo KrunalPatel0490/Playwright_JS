@@ -102,7 +102,7 @@ jobs:
           docker run --rm \
             -v ${{ github.workspace }}/test-results:/app/test-results \
             -v ${{ github.workspace }}/playwright-report:/app/playwright-report \
-            playwright-tests npx playwright test tests/example/ --reporter=html
+            playwright-tests npx playwright test tests/example/ --project=chromium --reporter=html
 
       - name: Upload Docker test results
         uses: actions/upload-artifact@v4

@@ -17,6 +17,7 @@ Model (POM) design pattern and data-driven testing capabilities.
 - **API Testing** with data factories, authentication manager, test helpers, and
   mocking capabilities
 - **Allure Reports Integration** for detailed test insights and reporting
+- **Performance Monitoring** with budgeting and detailed reporting
 
 ## Getting Started
 
@@ -49,6 +50,7 @@ be used to run specific groups of tests.
 - `@ui`: Tests that verify UI elements and interactions
 - `@search`: Tests related to search functionality
 - `@google`: Tests specific to Google search
+- `@performance`: Tests that verify performance budgets
 
 ### Running Tests by Tags
 
@@ -233,6 +235,116 @@ npx playwright test tests/api/
 # Run specific API test
 npx playwright test tests/api/users.spec.js
 ```
+
+## Performance Monitoring
+
+The framework includes performance monitoring capabilities to help you track and
+enforce performance budgets for your application.
+
+### Features
+
+- **Performance Metrics Collection**: Automatically collects key performance
+  metrics like page load time, time to interactive, and resource usage.
+- **Performance Budgets**: Define and enforce performance budgets for different
+  pages.
+- **Detailed Reporting**: Generates detailed performance reports for analysis.
+- **Integration with Tests**: Easily add performance checks to your existing
+  tests.
+
+### Setting Up Performance Budgets
+
+Performance budgets are defined in `config/performance-budgets.js`. You can set
+budgets for:
+
+- Page load time
+- Time to interactive
+- Number of HTTP requests
+- Total resources size
+
+Example configuration:
+
+```javascript
+// config/performance-budgets.js
+const COMMON_BUDGETS = {
+  timeToInteractive: 5000, // 5 seconds
+  totalRequests: 50,
+  totalResourcesSize: 2 * 1024 * 1024, // 2MB
+};
+```
+
+### Adding Performance Checks to Tests
+
+1. Import the performance utilities:
+
+```javascript
+const PerformanceUtils = require('./utils/performance-utils');
+const { getPerformanceBudget } = require('../config/performance-budgets');
+```
+
+2. Initialize the performance tracker in your test:
+
+```javascript
+test.beforeEach(async ({ page }) => {
+  performanceUtils = new PerformanceUtils(page);
+  await performanceUtils.startTracking();
+  // Your test setup code
+});
+```
+
+3. Add performance assertions:
+
+```javascript
+test('should meet performance budget', async () => {
+  // Your test actions
+
+  // Get performance metrics
+  const metrics = await performanceUtils.stopTracking('test-name');
+
+  // Get and assert against performance budget
+  const performanceBudget = getPerformanceBudget(await page.url());
+  performanceUtils.assertPerformanceBudget(performanceBudget);
+});
+```
+
+### Running Tests with Performance Monitoring
+
+Performance monitoring is enabled by default for tests tagged with
+`@performance`. To run only performance tests:
+
+```bash
+# Run all performance tests
+npx playwright test --grep @performance
+
+# Run performance tests with HTML report
+npx playwright test --grep @performance --reporter=html
+```
+
+### Viewing Performance Reports
+
+Performance reports are saved to `test-results/performance/` by default. Each
+test generates a JSON file with detailed metrics.
+
+To view a summary of performance metrics in the console, add this to your test:
+
+```javascript
+console.log('Performance Metrics:', {
+  pageLoadTime: `${metrics.pageLoadTime}ms`,
+  timeToInteractive: `${metrics.timeToInteractive}ms`,
+  totalRequests: metrics.totalRequests,
+  totalResourcesSize: performanceUtils.formatBytes(metrics.totalResourcesSize),
+});
+```
+
+### Best Practices
+
+1. **Set Realistic Budgets**: Base your budgets on real user metrics from tools
+   like Google Analytics.
+2. **Monitor Trends**: Track performance metrics over time to identify
+   regressions.
+3. **Test on Different Networks**: Use Playwright's network throttling to test
+   under different network conditions.
+4. **Focus on Critical User Journeys**: Add performance checks to your most
+   important user flows first.
 
 ## Project Structure
 
