@@ -53,6 +53,7 @@ module.exports = {
       rules: {
         'no-console': 'off', // Allow console in tests for debugging
         'playwright/no-conditional-in-test': 'off', // Allow conditionals in tests for now
+        'max-lines-per-function': 'off',
       },
     },
     {

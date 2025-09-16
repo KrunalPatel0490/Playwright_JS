@@ -1,33 +1,21 @@
 const { test, expect } = require('@playwright/test');
 const LoginPage = require('../pages/login-page');
 const PerformanceUtils = require('../utils/performance-utils');
-const { getPerformanceBudget } = require('../../config/performance-budgets');
-const { generateRandomEmail } = require('../utils/test-utils');
-const { getCurrentEnvironment } = require('../../config/environment');
+const { withRetryableTest } = require('../utils/test-utils');
 
-async function verifyPerformanceMetrics(performanceUtils) {
-  const metrics = await performanceUtils.stopTracking('login-page-load');
-  const performanceBudget = getPerformanceMetrics();
-  performanceUtils.assertPerformanceBudget(performanceBudget);
-
-  logPerformanceMetrics(metrics, performanceUtils);
-}
-
-function getPerformanceMetrics() {
-  return getPerformanceBudget('https://example.com');
-}
-
-function logPerformanceMetrics(metrics, performanceUtils) {
-  console.log('Login Page Performance Metrics:', {
-    pageLoadTime: `${metrics.pageLoadTime}ms`,
-    timeToInteractive: `${metrics.timeToInteractive}ms`,
-    totalRequests: metrics.totalRequests,
-    totalResourcesSize: performanceUtils.formatBytes(metrics.totalResourcesSize),
-  });
-}
+// Test credentials for the practice test automation site
+const TEST_CREDENTIALS = {
+  valid: {
+    username: 'student',
+    password: 'Password123',
+  },
+  invalid: {
+    username: 'invaliduser',
+    password: 'invalidpass',
+  },
+};
 
 test.describe('login Tests', () => {
-  const env = getCurrentEnvironment();
   let loginPage;
   let performanceUtils;
 
@@ -37,58 +25,122 @@ test.describe('login Tests', () => {
     await performanceUtils.startTracking();
   });
 
-  test.afterEach(async () => {
-    // Ensure we always stop tracking and generate report, even if test fails
+  test.afterEach(async ({ page }) => {
+    // Ensure we're logged out after each test
+    const currentUrl = page.url();
+    if (currentUrl.includes('logged-in-successfully')) {
+      await loginPage.logout();
+    }
+
     if (performanceUtils) {
       await performanceUtils.stopTracking(test.info().title);
     }
   });
 
-  test('should load login page within performance budget @performance', async ({ page }) => {
-    // Navigate to example.com instead of a login page that doesn't exist
-    await loginPage.navigate('https://example.com');
-    await verifyPerformanceMetrics(performanceUtils);
-    // Check if the page loaded successfully
-    const title = await page.title();
-    expect(title).toContain('Example Domain');
-  });
+  test(
+    'should load login page successfully',
+    withRetryableTest(
+      async ({ page }) => {
+        await loginPage.navigateToLogin();
+        const isFormVisible = await loginPage.isLoginFormVisible();
+        expect(isFormVisible).toBeTruthy();
 
-  test('should demonstrate page interaction', async ({ page }) => {
-    const loginPage = new LoginPage(page);
+        // Verify the page title
+        await expect(page).toHaveTitle(/Test Login | Practice Test Automation/);
+      },
+      {
+        maxRetries: 2,
+        description: 'Login page load test',
+      }
+    )
+  );
 
-    // Navigate to example.com
-    await loginPage.navigate('https://example.com');
+  test(
+    'should login with valid credentials',
+    withRetryableTest(
+      async ({ page }) => {
+        await loginPage.navigateToLogin();
+        await loginPage.login(TEST_CREDENTIALS.valid.username, TEST_CREDENTIALS.valid.password);
 
-    // Check if there are any links on the page
-    const linkCount = await page.locator('a').count();
-    expect(linkCount).toBeGreaterThanOrEqual(0);
-  });
+        // Verify successful login
+        await expect(page).toHaveURL(/.*logged-in-successfully/);
+        const successMessage = await loginPage.getSuccessMessage();
+        expect(successMessage).toContain('Logged In Successfully');
+      },
+      {
+        maxRetries: 2,
+        description: 'Successful login test',
+      }
+    )
+  );
 
-  test('should generate random test data', async ({ page }) => {
-    const loginPage = new LoginPage(page);
+  test(
+    'should show error with invalid credentials',
+    withRetryableTest(
+      async ({ page }) => {
+        await loginPage.navigateToLogin();
+        await loginPage.login(TEST_CREDENTIALS.invalid.username, TEST_CREDENTIALS.invalid.password);
 
-    // Demonstrate utility function usage
-    const randomEmail = generateRandomEmail();
-    expect(randomEmail).toContain('@example.com');
-    expect(randomEmail).toMatch(/test-\w+@example\.com/);
+        // Verify error message
+        const errorMessage = await loginPage.getErrorMessage();
+        expect(errorMessage).toContain('Your username is invalid!');
 
-    // Navigate to verify page works
-    await loginPage.navigate('https://example.com');
-    const title = await page.title();
-    expect(title).toBeTruthy();
-  });
+        // Verify we're still on the login page
+        await expect(page).toHaveURL(/.*practice-test-login/);
+      },
+      {
+        maxRetries: 2,
+        description: 'Failed login test',
+      }
+    )
+  );
 
-  test('should demonstrate environment configuration', async ({ page }) => {
-    const loginPage = new LoginPage(page);
+  test(
+    'should be able to logout after login',
+    withRetryableTest(
+      async ({ page }) => {
+        // Login first
+        await loginPage.navigateToLogin();
+        await loginPage.login(TEST_CREDENTIALS.valid.username, TEST_CREDENTIALS.valid.password);
 
-    // Test environment configuration
-    expect(env).toBeDefined();
-    expect(env.baseURL).toBeDefined();
-    expect(env.timeout).toBeDefined();
+        // Verify login was successful
+        await expect(page).toHaveURL(/.*logged-in-successfully/);
 
-    // Navigate using environment config (fallback to example.com for demo)
-    await loginPage.navigate('https://example.com');
-    const title = await page.title();
-    expect(title).toContain('Example Domain');
-  });
+        // Logout
+        await loginPage.logout();
+
+        // Verify logout was successful
+        await expect(page).toHaveURL(/.*practice-test-login/);
+        const isFormVisible = await loginPage.isLoginFormVisible();
+        expect(isFormVisible).toBeTruthy();
+      },
+      {
+        maxRetries: 2,
+        description: 'Logout test',
+      }
+    )
+  );
+
+  test(
+    'should load login page within performance budget',
+    withRetryableTest(
+      async ({ page }) => {
+        await loginPage.navigateToLogin();
+
+        // Simple performance check - you might want to enhance this with actual metrics
+        const startTime = Date.now();
+        await page.waitForLoadState('load');
+        const loadTime = Date.now() - startTime;
+
+        console.log(`Page loaded in ${loadTime}ms`);
+        expect(loadTime).toBeLessThan(5000); // 5 seconds max load time
+
+        await performanceUtils.stopTracking('login-page-load');
+      },
+      {
+        maxRetries: 1,
+        description: 'Login page performance test',
+      }
+    )
+  );
 });

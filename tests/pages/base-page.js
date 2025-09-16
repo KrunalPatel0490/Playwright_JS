@@ -311,6 +311,15 @@ class BasePage {
   // ======================
 
   /**
+   * Get text content of an element
+   * @param {string} selector - Element selector
+   * @returns {Promise<string>} Text content of the element
+   */
+  async getText(selector) {
+    return this.page.locator(selector).textContent();
+  }
+
+  /**
    * Get the current page title
    * @returns {Promise<string>} Page title
    */
